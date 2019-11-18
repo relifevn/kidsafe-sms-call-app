@@ -31,6 +31,7 @@ import { environment } from './config/environment';
 
 import { NativeModules } from 'react-native';
 var DirectSms = NativeModules.DirectSms;
+var DirectCall = NativeModules.DirectCall;
 
 import SendSMS from 'react-native-sms'
 
@@ -69,6 +70,58 @@ class App extends React.PureComponent {
     }
   }
 
+  _call = async () => {
+    try {
+      // const granted_MANAGE_OWN_CALLS = await PermissionsAndroid.request(
+      //   PermissionsAndroid.PERMISSIONS.MANAGE_OWN_CALLS,
+      //   {
+      //     title: 'YourProject App Call Permission',
+      //     message:
+      //       'YourProject App needs access to your inbox ' +
+      //       'so you can send messages in background.',
+      //     buttonNeutral: 'Ask Me Later',
+      //     buttonNegative: 'Cancel',
+      //     buttonPositive: 'OK',
+      //   },
+      // );
+      // const granted_READ_CALL_LOG = await PermissionsAndroid.request(
+      //   PermissionsAndroid.PERMISSIONS.READ_CALL_LOG,
+      //   {
+      //     title: 'YourProject App Call Permission',
+      //     message:
+      //       'YourProject App needs access to your inbox ' +
+      //       'so you can send messages in background.',
+      //     buttonNeutral: 'Ask Me Later',
+      //     buttonNegative: 'Cancel',
+      //     buttonPositive: 'OK',
+      //   },
+      // );
+      // const granted_READ_PHONE_STATE = await PermissionsAndroid.request(
+      //   PermissionsAndroid.PERMISSIONS.READ_PHONE_STATE,
+      //   {
+      //     title: 'YourProject App Call Permission',
+      //     message:
+      //       'YourProject App needs access to your inbox ' +
+      //       'so you can send messages in background.',
+      //     buttonNeutral: 'Ask Me Later',
+      //     buttonNegative: 'Cancel',
+      //     buttonPositive: 'OK',
+      //   },
+      // );
+      // if (granted_MANAGE_OWN_CALLS === PermissionsAndroid.RESULTS.GRANTED
+      //   && granted_READ_CALL_LOG === PermissionsAndroid.RESULTS.GRANTED
+      //   && granted_READ_PHONE_STATE === PermissionsAndroid.RESULTS.GRANTED) {
+      //   DirectCall.call('0387358924');
+      // } else {
+      //   console.log('SMS permission denied');
+      // }
+      DirectCall.call('0387358924');
+    } catch (err) {
+      console.warn(err);
+    }
+  }
+
+  /* Deprecated */
   sendSMS = () => {
     SendSMS.send({
       body: 'The default body of the SMS!',
@@ -94,7 +147,11 @@ class App extends React.PureComponent {
     return (
       <SafeAreaView>
         <TouchableOpacity style={{ backgroundColor: 'green', alignSelf: 'center' }} onPress={this._sendSMS}>
-          <Text>Click me</Text>
+          <Text>Send SMS</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={{ backgroundColor: 'green', alignSelf: 'center' }} onPress={this._call}>
+          <Text>Call</Text>
         </TouchableOpacity>
         {/* <ScrollView
             contentInsetAdjustmentBehavior="automatic"
