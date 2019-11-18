@@ -14,6 +14,7 @@ import {
   View,
   Text,
   StatusBar,
+  TouchableOpacity
 } from 'react-native';
 
 import {
@@ -24,53 +25,91 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-const App = () => {
-  return (
-    <>
-      <StatusBar barStyle="dark-content" />
+import io from 'socket.io-client';
+import { environment } from './config/environment';
+
+import SendSMS from 'react-native-sms'
+
+class App extends React.PureComponent {
+
+  constructor(props) {
+    super(props);
+    this.socket = io(environment.serverUrl);
+
+    this.socket.on('vehicles-result', (data) => {
+      console.log('DATA received from server', data);
+    });
+  }
+  
+  sendSMS = () => {
+    SendSMS.send({
+      body: 'The default body of the SMS!',
+      recipients: ['0387358924'],
+      successTypes: ['sent', 'queued'],
+      allowAndroidSendWithoutReadPermission: true
+    }, (completed, cancelled, error) => {
+
+      console.log('SMS Callback: completed: ' + completed + ' cancelled: ' + cancelled + 'error: ' + error);
+
+    });
+  }
+
+  _onPress = () => {
+    this.socket.emit('select-school', { key: 'school_1' });
+  }
+
+  componentDidMount() {
+  }
+
+
+  render() {
+    return (
       <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
+        <TouchableOpacity style={{ backgroundColor: 'green', alignSelf: 'center' }} onPress={this.sendSMS}>
+          <Text>Click me</Text>
+        </TouchableOpacity>
+        {/* <ScrollView
+            contentInsetAdjustmentBehavior="automatic"
+            style={styles.scrollView}>
+            <Header />
+            {global.HermesInternal == null ? null : (
+              <View style={styles.engine}>
+                <Text style={styles.footer}>Engine: Hermes</Text>
+              </View>
+            )}
+            <View style={styles.body}>
+              <View style={styles.sectionContainer}>
+                <Text style={styles.sectionTitle}>Step One</Text>
+                <Text style={styles.sectionDescription}>
+                  asa <Text style={styles.highlight}>App.js</Text> to change this
+                  screen and then fsdf back to see your edits.
+                </Text>
+              </View>
+              <View style={styles.sectionContainer}>
+                <Text style={styles.sectionTitle}>See Your Changes</Text>
+                <Text style={styles.sectionDescription}>
+                  <ReloadInstructions />
+                </Text>
+              </View>
+              <View style={styles.sectionContainer}>
+                <Text style={styles.sectionTitle}>Debug</Text>
+                <Text style={styles.sectionDescription}>
+                  <DebugInstructions />
+                </Text>
+              </View>
+              <View style={styles.sectionContainer}>
+                <Text style={styles.sectionTitle}>Learn More</Text>
+                <Text style={styles.sectionDescription}>
+                  Read the docs to discover what to do next:
+                </Text>
+              </View>
+              <LearnMoreLinks />
             </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                asa <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then fsdf back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
-          </View>
-        </ScrollView>
+          </ScrollView> */}
       </SafeAreaView>
-    </>
-  );
-};
+    );
+  }
+}
 
 const styles = StyleSheet.create({
   scrollView: {
