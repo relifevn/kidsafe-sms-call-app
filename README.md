@@ -20,3 +20,6 @@ Accept licenses :
 
 react-native run-android
 yarn start
+
+Send SMS
+https://blog.usejournal.com/sending-direct-sms-in-react-native-android-d902d6bf1f04

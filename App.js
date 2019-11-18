@@ -14,7 +14,8 @@ import {
   View,
   Text,
   StatusBar,
-  TouchableOpacity
+  TouchableOpacity,
+  PermissionsAndroid,
 } from 'react-native';
 
 import {
@@ -28,6 +29,9 @@ import {
 import io from 'socket.io-client';
 import { environment } from './config/environment';
 
+import { NativeModules } from 'react-native';
+var DirectSms = NativeModules.DirectSms;
+
 import SendSMS from 'react-native-sms'
 
 class App extends React.PureComponent {
@@ -40,7 +44,31 @@ class App extends React.PureComponent {
       console.log('DATA received from server', data);
     });
   }
-  
+
+  _sendSMS = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.SEND_SMS,
+        {
+          title: 'YourProject App Sms Permission',
+          message:
+            'YourProject App needs access to your inbox ' +
+            'so you can send messages in background.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        DirectSms.sendDirectSms('0387358924', 'This is a direct message');
+      } else {
+        console.log('SMS permission denied');
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  }
+
   sendSMS = () => {
     SendSMS.send({
       body: 'The default body of the SMS!',
@@ -65,7 +93,7 @@ class App extends React.PureComponent {
   render() {
     return (
       <SafeAreaView>
-        <TouchableOpacity style={{ backgroundColor: 'green', alignSelf: 'center' }} onPress={this.sendSMS}>
+        <TouchableOpacity style={{ backgroundColor: 'green', alignSelf: 'center' }} onPress={this._sendSMS}>
           <Text>Click me</Text>
         </TouchableOpacity>
         {/* <ScrollView
