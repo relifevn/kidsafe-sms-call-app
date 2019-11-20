@@ -1,3 +1,5 @@
+** NOTE:  This project is stopped due to startActivity() not working in DirectCallModule.java 
+  
   Run instructions for iOS:
     • cd /home/re/Documents/research/react-native/AwesomeProject && npx react-native run-ios
     - or -

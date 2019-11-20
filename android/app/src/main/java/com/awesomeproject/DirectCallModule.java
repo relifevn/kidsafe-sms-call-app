@@ -10,6 +10,10 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.uimanager.IllegalViewOperationException;
+
+import android.widget.Toast;
+import com.facebook.react.bridge.NativeModule;
+import com.facebook.react.bridge.ReactContext;
  
 public class DirectCallModule extends ReactContextBaseJavaModule {
  
@@ -28,7 +32,8 @@ public class DirectCallModule extends ReactContextBaseJavaModule {
         try {  
             Intent phoneIntent = new Intent(Intent.ACTION_CALL);
             phoneIntent.setData(Uri.parse("tel:" + phoneNumber));
-            Context.startActivity(phoneIntent);
+            ReactApplicationContext context = getReactApplicationContext();
+            context.startActivity(phoneIntent);
         } catch (Exception ex) {
             System.out.println("couldn't call.");
         } 
